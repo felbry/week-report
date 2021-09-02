@@ -109,7 +109,7 @@ export class CVCreator {
                 new Paragraph({
                   children: [
                     new TextRun({
-                      text: `${itemIndex + 1}）${item.content}   ----${item.progress}%`,
+                      text: `${itemIndex + 1}）${item.content}${item.progress ? `   ----${item.progress}%` : ''}`,
                       font: 'Microsoft Yahei',
                       size: FONT_SIZE.TEXT
                     })

@@ -2,7 +2,7 @@
   <div>
     <el-form
       v-for="(form, formIndex) in formList"
-      :key="form.title"
+      :key="formIndex"
       label-width="auto"
     >
       <el-form-item :label="`${formIndex + 1}、`">
