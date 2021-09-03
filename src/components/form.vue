@@ -6,7 +6,10 @@
       label-width="auto"
     >
       <el-form-item :label="`${formIndex + 1}、`">
-        <el-input v-model="form.title" />
+        <el-input
+          v-model="form.title"
+          placeholder="项目名称"
+        />
         <el-button
           v-if="formIndex === formList.length - 1"
           icon="el-icon-plus"
@@ -34,6 +37,7 @@
               :placeholder="`工作内容${index + 1}`"
             />
             <el-input
+              v-show="isProgress"
               v-model="item.progress"
               placeholder="进度"
             >
@@ -75,6 +79,12 @@ class Form {
   }
 }
 export default {
+  props: {
+    isProgress: {
+      type: Boolean,
+      default: true
+    }
+  },
   data () {
     return {
       formList: [new Form()]

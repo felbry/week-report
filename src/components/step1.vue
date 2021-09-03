@@ -8,29 +8,34 @@
       4. 确认 收件人和抄送人 点击发送
     </el-card>
     <h1>一、本周完成重点工作</h1>
-    <MyForm ref="currentJob" />
+    <MyForm
+      ref="currentJob"
+    />
     <h1>二、下周重点工作</h1>
-    <MyForm ref="nextJob" />
+    <MyForm
+      ref="nextJob"
+      :is-progress="false"
+    />
     <h1>三、意见建议</h1>
     <el-input
       v-model="form.suggestion"
       type="textarea"
       autosize
-      placeholder="意见建议"
+      placeholder="意见建议（不填默认为“暂无”）"
     />
     <h1>四、培训需求</h1>
     <el-input
       v-model="form.train"
       type="textarea"
       autosize
-      placeholder="培训需求"
+      placeholder="培训需求（不填默认为“暂无”）"
     />
     <h1>五、待解决问题</h1>
     <el-input
       v-model="form.unresolved"
       type="textarea"
       autosize
-      placeholder="待解决问题"
+      placeholder="待解决问题（不填默认为“暂无”）"
     />
     <el-divider />
     <el-card>

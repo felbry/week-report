@@ -40,7 +40,7 @@ export class CVCreator {
               children: [
                 new TextRun({
                   // eslint-disable-next-line
-                  text: `${dayjs().startOf('week').add(1, 'day').format('YYYY年MM月DD日')} - ${dayjs().endOf('week').subtract(1, 'day').format('YYYY年MM月DD日')}`,
+                  text: `（${dayjs().startOf('week').add(1, 'day').format('YYYY年MM月DD日')} - ${dayjs().endOf('week').subtract(1, 'day').format('YYYY年MM月DD日')}）`,
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.DATE
                 })

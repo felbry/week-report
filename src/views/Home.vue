@@ -19,9 +19,11 @@ export default {
   },
   methods: {
     download () {
-      const doc = new CVCreator().create(this.$refs.step1.getData())
+      const data = this.$refs.step1.getData()
+      const doc = new CVCreator().create(data)
       Packer.toBlob(doc).then(blob => {
-        saveAs(blob, 'example.docx')
+        // eslint-disable-next-line
+        saveAs(blob, `郑州软件开发中心周报-${data.name}-${dayjs().startOf('week').add(1, 'day').format('YYYYMMDD')}_${dayjs().endOf('week').subtract(1, 'day').format('YYYYMMDD')}.docx`)
       })
     }
   }
