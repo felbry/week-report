@@ -17,7 +17,7 @@ const FONT_SIZE = {
 export class CVCreator {
   create (data) {
     console.log(data)
-    const { name, currentJob, nextJob, suggestion, train, unresolved } = data
+    const { name, currentJob, nextJob, suggestion, train, unresolved, dateRange } = data
     const document = new Document({
       sections: [
         {
@@ -40,7 +40,7 @@ export class CVCreator {
               children: [
                 new TextRun({
                   // eslint-disable-next-line
-                  text: `（${dayjs().startOf('week').add(1, 'day').format('YYYY年MM月DD日')} - ${dayjs().endOf('week').subtract(1, 'day').format('YYYY年MM月DD日')}）`,
+                  text: `（${dateRange[0]} - ${dateRange[1]}）`,
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.DATE
                 })
@@ -66,7 +66,10 @@ export class CVCreator {
                     size: FONT_SIZE.SECTION_SUB_TITLE,
                     bold: true
                   })
-                ]
+                ],
+                indent: {
+                  left: 360
+                }
               }),
               ...form.list.map((item, itemIndex) =>
                 new Paragraph({
@@ -78,7 +81,7 @@ export class CVCreator {
                     })
                   ],
                   indent: {
-                    left: 360
+                    left: 720
                   }
                 })
               )
@@ -103,7 +106,10 @@ export class CVCreator {
                     size: FONT_SIZE.SECTION_SUB_TITLE,
                     bold: true
                   })
-                ]
+                ],
+                indent: {
+                  left: 360
+                }
               }),
               ...form.list.map((item, itemIndex) =>
                 new Paragraph({
@@ -115,7 +121,7 @@ export class CVCreator {
                     })
                   ],
                   indent: {
-                    left: 360
+                    left: 720
                   }
                 })
               )
@@ -138,7 +144,10 @@ export class CVCreator {
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.TEXT
                 })
-              ]
+              ],
+              indent: {
+                left: 360
+              }
             }),
             // 第4章
             new Paragraph({
@@ -158,7 +167,10 @@ export class CVCreator {
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.TEXT
                 })
-              ]
+              ],
+              indent: {
+                left: 360
+              }
             }),
             // 第5章
             new Paragraph({
@@ -178,7 +190,10 @@ export class CVCreator {
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.TEXT
                 })
-              ]
+              ],
+              indent: {
+                left: 360
+              }
             })
           ]
         }
