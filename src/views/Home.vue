@@ -57,7 +57,7 @@
         <el-alert
           title="标准邮件标题"
           type="success"
-          :description="`${name}-周报-${dateRange[0]}_${dateRange[1]}`"
+          :description="`郑州开发中心-${name || '[先完善姓名]'}-周报-${dateRange[0]}_${dateRange[1]}`"
           style="margin: 15px 0"
         />
         打开 <el-link
