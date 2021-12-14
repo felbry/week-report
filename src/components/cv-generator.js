@@ -17,7 +17,7 @@ const FONT_SIZE = {
 export class CVCreator {
   create (data) {
     console.log(data)
-    const { name, currentJob, nextJob, suggestion, train, unresolved, dateRange } = data
+    const { isShowCurrentWeekProgress, name, currentJob, nextJob, suggestion, train, unresolved, dateRange } = data
     const document = new Document({
       sections: [
         {
@@ -75,7 +75,7 @@ export class CVCreator {
                 new Paragraph({
                   children: [
                     new TextRun({
-                      text: `${itemIndex + 1}）${item.content}   ----${item.progress}%`,
+                      text: `${itemIndex + 1}）${item.content}${isShowCurrentWeekProgress ? `   ----${item.progress}%` : ''}`,
                       font: 'Microsoft Yahei',
                       size: FONT_SIZE.TEXT
                     })

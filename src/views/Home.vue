@@ -51,27 +51,31 @@
         </el-form>
       </el-collapse-item>
       <el-collapse-item
-        title="第3步：新建邮件"
+        title="第3步：新建邮件 确认信息并发送"
         name="3"
       >
         <el-alert
           title="标准邮件标题"
           type="success"
-          :description="`郑州开发中心-${name || '[先完善姓名]'}-周报-${dateRange[0]}_${dateRange[1]}`"
+          :description="emailTitle"
           style="margin: 15px 0"
         />
-        打开 <el-link
-          type="primary"
-          href="http://mail.chinatelecom.cn/webmail/signOn.do"
-          target="_blank"
-        >
-          邮箱地址
-        </el-link> ，新建邮件（提示：也可以在“已发送”中“再次编辑”邮件，这样省去了填写收件人和抄送人的步骤），并将 标准邮件标题 和 Word全部内容 复制粘贴进邮件（如果不是新建而是再次编辑，请确保粘贴过程中“保留邮件签名”）
-      </el-collapse-item>
-      <el-collapse-item
-        title="第4步：确认并发送"
-        name="4"
-      >
+        <div>
+          <el-button
+            type="primary"
+            style="margin-bottom: 15px"
+            @click="copy"
+          >
+            点击复制 标准邮件标题 并打开邮箱地址
+            <i
+              class="el-icon-d-arrow-right"
+            />
+          </el-button>
+        </div>
+        新建邮件（提示：也可以在“已发送”中“再次编辑”邮件，这样省去了填写收件人和抄送人的步骤），
+        <br>并将 标准邮件标题 和 Word全部内容（Ctrl+A） 复制粘贴进邮件对应位置
+        <br>（如果不是新建而是再次编辑，请确保粘贴过程中“保留邮件签名”）
+        <br><br>
         确认 <el-tag>收件人和抄送人</el-tag>、<el-tag>邮件标题</el-tag>、<el-tag>附件是否已上传</el-tag>、<el-tag>邮件签名</el-tag> 点击发送
       </el-collapse-item>
     </el-collapse>
@@ -83,6 +87,20 @@ import Step1 from '@/components/step1.vue'
 import { saveAs } from 'file-saver'
 import { Packer } from 'docx'
 import { CVCreator } from '@/components/cv-generator.js'
+function copyToClip (str) {
+  function listener (evt) {
+    // 为什么会有两行设置呢？我记得看MDN上提到了一句：是为了降级处理
+    // 假如只设置html形式，那么粘贴到input这种文本输入框中是无效的，只能粘贴到富文本域中
+    // 举例：对于'<p>123</p>'这个字符串，如果设置成html形式，那么粘贴到文本输入框中为空，富文本域正常
+    // 如果两种形式都设置，那么粘到文本输入框就是'<p>123</p>'，富文本域效果同上
+    evt.clipboardData.setData('text/html', str)
+    evt.clipboardData.setData('text/plain', str)
+    evt.preventDefault()
+  }
+  document.addEventListener('copy', listener)
+  document.execCommand('copy')
+  document.removeEventListener('copy', listener)
+}
 export default {
   name: 'Home',
   components: {
@@ -96,6 +114,11 @@ export default {
       dateRange: [dayjs().startOf('week').add(1, 'day').format('YYYYMMDD'), dayjs().endOf('week').subtract(1, 'day').format('YYYYMMDD')]
     }
   },
+  computed: {
+    emailTitle () {
+      return `郑州开发中心-${this.name || '[先完善姓名]'}-周报-${this.dateRange[0]}_${this.dateRange[1]}`
+    }
+  },
   methods: {
     download () {
       const data = this.$refs.step1.getData()
@@ -104,6 +127,12 @@ export default {
       Packer.toBlob(doc).then(blob => {
         saveAs(blob, `郑州软件开发中心周报-${this.name}-${this.dateRange[0]}_${this.dateRange[1]}.docx`)
       })
+    },
+    copy () {
+      copyToClip(this.emailTitle)
+      this.$confirm('已复制 标准邮件标题，是否立即打开邮箱页面？', '提示').then(() => {
+        window.open('http://mail.chinatelecom.cn/webmail/signOn.do')
+      }).catch(() => {})
     }
   }
 }
