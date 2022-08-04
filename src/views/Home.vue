@@ -2,7 +2,6 @@
   <div class="home">
     <el-collapse
       v-model="activeName"
-      accordion
     >
       <el-collapse-item
         :title="`第0步：确认日期（可选） 当前日期 ${dateRange[0]} - ${dateRange[1]}`"
@@ -11,7 +10,7 @@
         <el-alert
           title="默认情况，周报的起始日期为本周一至本周五。但是也有特殊情况，比如小长假或是其它原因，这时需要手动改变起始日期"
           type="error"
-          style="margin: 15px 0"
+          style="margin: 0 0 8px"
         />
         <el-date-picker
           v-model="dateRange"
@@ -39,10 +38,9 @@
           <el-form-item label="你的姓名：">
             <el-input v-model="name" />
           </el-form-item>
-          <el-form-item>
+          <el-form-item style="margin: 0">
             <el-button
               type="primary"
-              style="margin-top: 20px"
               @click="download"
             >
               下载Word
@@ -51,14 +49,14 @@
         </el-form>
       </el-collapse-item>
       <el-collapse-item
-        title="第3步：新建邮件 确认信息并发送"
+        title="第3步：点击按钮 启动客户端 确认信息并发送"
         name="3"
       >
         <el-alert
           title="标准邮件标题"
           type="success"
           :description="emailTitle"
-          style="margin: 15px 0"
+          style="margin: 0 0 10px"
         />
         <div>
           <el-button
@@ -66,17 +64,37 @@
             style="margin-bottom: 15px"
             @click="copy"
           >
-            点击复制 标准邮件标题 并打开邮箱地址
+            点击复制 标准邮件标题 并启动本地邮件客户端（foxmail/网易邮箱大师）
             <i
               class="el-icon-d-arrow-right"
             />
           </el-button>
         </div>
-        新建邮件（提示：也可以在“已发送”中“再次编辑”邮件，这样省去了填写收件人和抄送人的步骤），
-        <br>并将 标准邮件标题 和 Word全部内容（Ctrl+A） 复制粘贴进邮件对应位置
-        <br>（如果不是新建而是再次编辑，请确保粘贴过程中“保留邮件签名”）
-        <br><br>
-        确认 <el-tag>收件人和抄送人</el-tag>、<el-tag>邮件标题</el-tag>、<el-tag>附件是否已上传</el-tag>、<el-tag>邮件签名</el-tag> 点击发送
+        <el-card style="margin-bottom: 15px">
+          <div
+            slot="header"
+            class="clearfix"
+          >
+            <span>完善<el-tag>收件人和抄送人</el-tag>，自动填充邮件客户端。（缓存本地，一次填写，多次利用）</span>
+            <!-- <el-button
+              style="float: right; padding: 3px 0"
+              type="text"
+            >
+              操作按钮
+            </el-button> -->
+          </div>
+          <Receiver
+            title="收件人"
+            :list="sjList"
+            @update:list="updateList('sjList', ...arguments)"
+          />
+          <Receiver
+            title="抄送人"
+            :list="csList"
+            @update:list="updateList('csList', ...arguments)"
+          />
+        </el-card>
+        在邮件客户端中确认 <el-tag>收件人和抄送人</el-tag>、<el-tag>邮件标题</el-tag>、<el-tag>附件是否已上传</el-tag>、<el-tag>邮件签名</el-tag> 无误，发送邮件
       </el-collapse-item>
     </el-collapse>
   </div>
@@ -84,6 +102,7 @@
 
 <script>
 import Step1 from '@/components/step1.vue'
+import Receiver from '@/components/receiver.vue'
 import { saveAs } from 'file-saver'
 import { Packer } from 'docx'
 import { CVCreator } from '@/components/cv-generator.js'
@@ -104,11 +123,14 @@ function copyToClip (str) {
 export default {
   name: 'Home',
   components: {
-    Step1
+    Step1,
+    Receiver
   },
   data () {
     return {
-      activeName: '0',
+      sjList: [],
+      csList: [],
+      activeName: ['0', '2', '3'],
       name: '',
       // eslint-disable-next-line
       dateRange: [dayjs().startOf('week').add(1, 'day').format('YYYYMMDD'), dayjs().endOf('week').subtract(1, 'day').format('YYYYMMDD')]
@@ -116,22 +138,34 @@ export default {
   },
   computed: {
     emailTitle () {
-      return `郑州开发中心-${this.name || '[先完善姓名]'}-周报-${this.dateRange[0]}_${this.dateRange[1]}`
+      return `郑州开发中心-${this.name || '[先填写姓名]'}-周报-${this.dateRange[0]}_${this.dateRange[1]}`
     }
   },
+  mounted () {
+    this.sjList = JSON.parse(window.localStorage.getItem('sjList') || '[]')
+    this.csList = JSON.parse(window.localStorage.getItem('csList') || '[]')
+  },
   methods: {
+    updateList (key, list) {
+      window.localStorage.setItem(key, JSON.stringify(list))
+      this[key] = list
+    },
     download () {
       const data = this.$refs.step1.getData()
       // eslint-disable-next-line
       const doc = new CVCreator().create({ ...data, name: this.name, dateRange: this.dateRange.map(str => dayjs(str).format('YYYY年MM月DD日')) })
       Packer.toBlob(doc).then(blob => {
-        saveAs(blob, `郑州软件开发中心周报-${this.name}-${this.dateRange[0]}_${this.dateRange[1]}.docx`)
+        saveAs(blob, `郑州开发中心周报-${this.name}-${this.dateRange[0]}_${this.dateRange[1]}.docx`)
       })
     },
     copy () {
       copyToClip(this.emailTitle)
-      this.$confirm('已复制 标准邮件标题，是否立即打开邮箱页面？', '提示').then(() => {
-        window.open('http://mail.chinatelecom.cn/webmail/signOn.do')
+      this.$confirm('已复制 标准邮件标题，是否立即启动本地邮件客户端？', '提示').then(() => {
+        const a = document.createElement('a')
+        a.href = `mailto:${this.sjList.join(',')}?cc=${this.csList.join(',')}&subject=${this.emailTitle}`
+        a.style = 'display: none'
+        document.body.appendChild(a)
+        a.click()
       }).catch(() => {})
     }
   }

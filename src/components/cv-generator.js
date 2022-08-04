@@ -27,7 +27,7 @@ export class CVCreator {
               alignment: AlignmentType.CENTER,
               children: [
                 new TextRun({
-                  text: `郑州软件开发中心周报—${name}`,
+                  text: `郑州开发中心周报—${name}`,
                   font: 'Microsoft Yahei',
                   size: FONT_SIZE.TITLE,
                   bold: true
