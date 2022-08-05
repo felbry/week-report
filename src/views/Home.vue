@@ -83,6 +83,21 @@
               操作按钮
             </el-button> -->
           </div>
+          <div style="margin-bottom: 10px;">
+            邮件客户端（邮件客户端影响邮箱是否填充正确）：
+            <el-radio-group
+              v-model="radio"
+              @change="changeRadio"
+            >
+              <el-radio label=";">
+                foxmail
+              </el-radio>
+              <el-radio label=",">
+                网易邮箱大师
+              </el-radio>
+            </el-radio-group>
+          </div>
+
           <Receiver
             title="收件人"
             :list="sjList"
@@ -128,6 +143,7 @@ export default {
   },
   data () {
     return {
+      radio: ';',
       sjList: [],
       csList: [],
       activeName: ['0', '2', '3'],
@@ -142,10 +158,14 @@ export default {
     }
   },
   mounted () {
+    this.radio = window.localStorage.getItem('radio') || ';'
     this.sjList = JSON.parse(window.localStorage.getItem('sjList') || '[]')
     this.csList = JSON.parse(window.localStorage.getItem('csList') || '[]')
   },
   methods: {
+    changeRadio (val) {
+      window.localStorage.setItem('radio', val)
+    },
     updateList (key, list) {
       window.localStorage.setItem(key, JSON.stringify(list))
       this[key] = list
@@ -162,7 +182,8 @@ export default {
       copyToClip(this.emailTitle)
       this.$confirm('已复制 标准邮件标题，是否立即启动本地邮件客户端？', '提示').then(() => {
         const a = document.createElement('a')
-        a.href = `mailto:${this.sjList.join(',')}?cc=${this.csList.join(',')}&subject=${this.emailTitle}`
+        console.log(this.radio)
+        a.href = `mailto:${this.sjList.join(this.radio)}?cc=${this.csList.join(this.radio)}&subject=${this.emailTitle}`
         a.style = 'display: none'
         document.body.appendChild(a)
         a.click()

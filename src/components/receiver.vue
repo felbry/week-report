@@ -16,6 +16,7 @@
       v-if="inputVisible"
       ref="saveTagInput"
       v-model="val"
+      placeholder="例：789@qq.com 或 123@qq.com,456@qq.com"
       class="input-new-tag"
       @keyup.enter.native="handleInputConfirm"
       @blur="handleInputConfirm"
@@ -81,7 +82,7 @@ export default {
   margin-top: 12px;
 } */
 .input-new-tag {
-    width: 300px!important;
+    width: 320px!important;
     margin-left: 10px;
   }
   .el-tag,
