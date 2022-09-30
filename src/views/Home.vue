@@ -154,7 +154,7 @@ export default {
   },
   computed: {
     emailTitle () {
-      return `郑州开发中心-${this.name || '[先填写姓名]'}-周报-${this.dateRange[0]}_${this.dateRange[1]}`
+      return `综合研发业务部-${this.name || '[先填写姓名]'}-周报-${this.dateRange[0]}_${this.dateRange[1]}`
     }
   },
   mounted () {
@@ -175,7 +175,7 @@ export default {
       // eslint-disable-next-line
       const doc = new CVCreator().create({ ...data, name: this.name, dateRange: this.dateRange.map(str => dayjs(str).format('YYYY年MM月DD日')) })
       Packer.toBlob(doc).then(blob => {
-        saveAs(blob, `郑州开发中心周报-${this.name}-${this.dateRange[0]}_${this.dateRange[1]}.docx`)
+        saveAs(blob, `综合研发业务部周报-${this.name}-${this.dateRange[0]}_${this.dateRange[1]}.docx`)
       })
     },
     copy () {
